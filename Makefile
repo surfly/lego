@@ -78,3 +78,7 @@ validate-doc:
 		git status --porcelain -- $(DOC_DIRECTORIES) 2>/dev/null; \
 		exit 2; \
 	fi
+
+release:
+	tar --transform='s,_.*,,' --transform='s,dist/,,' -cz -f ${BIN_OUTPUT}.tar.gz ${BIN_OUTPUT}
+	grm release surfly/lego -f ${BIN_OUTPUT}.tar.gz -t "v${VERSION}"
