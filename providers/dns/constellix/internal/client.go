@@ -60,7 +60,13 @@ func (c *Client) do(req *http.Request, result any) error {
 		return errutils.NewHTTPDoError(req, err)
 	}
 
-	defer func() { _ = resp.Body.Close() }()
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 429 {
+		fmt.Println("Rate limit exceeded, waiting 5 seconds...")
+		time.Sleep(5 * time.Second)
+		return c.do(req, result)
+	}
 
 	err = checkResponse(resp)
 	if err != nil {
